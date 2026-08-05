@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { type Href, router } from 'expo-router';
+import { type Href, router } from "expo-router";
+import { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -9,43 +9,43 @@ import {
   Text,
   TextInput,
   View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const loginColors = {
-  background: '#FFF8E8',
-  surface: '#FFFFFF',
-  text: '#3D3028',
-  mutedText: '#8A7A6D',
-  border: '#D9C9B2',
-  custard: '#F4D889',
-  caramel: '#9A5B32',
-  placeholder: '#AA9A8E',
+  background: "#FFF8E8",
+  surface: "#FFFFFF",
+  text: "#3D3028",
+  mutedText: "#8A7A6D",
+  border: "#D9C9B2",
+  custard: "#F4D889",
+  caramel: "#9A5B32",
+  placeholder: "#AA9A8E",
 };
 
 const noop = () => undefined;
-const homeRoute = '/home' as Href;
+const homeRoute = "/home" as Href;
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.keyboardView}>
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={styles.keyboardView}
+      >
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.content}>
             <View style={styles.intro}>
               <Text style={styles.wordmark}>pudding</Text>
               <View style={styles.wordmarkAccent} />
-              <Text style={styles.heading}>おかえりなさい</Text>
-              <Text style={styles.subtitle}>課題と予定を、やさしく整える。</Text>
             </View>
 
             <View style={styles.form}>
@@ -80,12 +80,18 @@ export default function LoginScreen() {
                   />
                   <Pressable
                     accessibilityLabel={
-                      isPasswordVisible ? 'パスワードを隠す' : 'パスワードを表示'
+                      isPasswordVisible
+                        ? "パスワードを隠す"
+                        : "パスワードを表示"
                     }
                     accessibilityRole="button"
                     hitSlop={8}
                     onPress={() => setIsPasswordVisible((visible) => !visible)}
-                    style={({ pressed }) => [styles.visibilityButton, pressed && styles.pressed]}>
+                    style={({ pressed }) => [
+                      styles.visibilityButton,
+                      pressed && styles.pressed,
+                    ]}
+                  >
                     <Text style={styles.visibilityText}>パスワードを表示</Text>
                   </Pressable>
                 </View>
@@ -94,14 +100,22 @@ export default function LoginScreen() {
               <Pressable
                 accessibilityRole="button"
                 onPress={noop}
-                style={({ pressed }) => [styles.forgotButton, pressed && styles.pressed]}>
+                style={({ pressed }) => [
+                  styles.forgotButton,
+                  pressed && styles.pressed,
+                ]}
+              >
                 <Text style={styles.textLink}>パスワードを忘れた方</Text>
               </Pressable>
 
               <Pressable
                 accessibilityRole="button"
                 onPress={() => router.replace(homeRoute)}
-                style={({ pressed }) => [styles.loginButton, pressed && styles.pressed]}>
+                style={({ pressed }) => [
+                  styles.loginButton,
+                  pressed && styles.pressed,
+                ]}
+              >
                 <Text style={styles.loginButtonText}>ログイン</Text>
               </Pressable>
             </View>
@@ -115,7 +129,11 @@ export default function LoginScreen() {
               <Pressable
                 accessibilityRole="button"
                 onPress={noop}
-                style={({ pressed }) => [styles.registerButton, pressed && styles.pressed]}>
+                style={({ pressed }) => [
+                  styles.registerButton,
+                  pressed && styles.pressed,
+                ]}
+              >
                 <Text style={styles.registerButtonText}>新規登録</Text>
               </Pressable>
             </View>
@@ -136,23 +154,23 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 24,
     paddingVertical: 56,
   },
   content: {
-    width: '100%',
+    width: "100%",
     maxWidth: 420,
   },
   intro: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 48,
   },
   wordmark: {
     color: loginColors.text,
     fontSize: 60,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: -2,
     lineHeight: 68,
   },
@@ -167,19 +185,19 @@ const styles = StyleSheet.create({
   heading: {
     color: loginColors.text,
     fontSize: 32,
-    fontWeight: '700',
+    fontWeight: "700",
     lineHeight: 42,
-    textAlign: 'center',
+    textAlign: "center",
   },
   subtitle: {
     color: loginColors.mutedText,
     fontSize: 16,
     lineHeight: 24,
     marginTop: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   form: {
-    width: '100%',
+    width: "100%",
   },
   fieldGroup: {
     gap: 10,
@@ -188,7 +206,7 @@ const styles = StyleSheet.create({
   label: {
     color: loginColors.text,
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   input: {
     height: 60,
@@ -201,26 +219,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   passwordInputContainer: {
-    position: 'relative',
-    justifyContent: 'center',
+    position: "relative",
+    justifyContent: "center",
   },
   passwordInput: {
     paddingRight: 156,
   },
   visibilityButton: {
-    position: 'absolute',
+    position: "absolute",
     right: 16,
-    justifyContent: 'center',
+    justifyContent: "center",
     minHeight: 44,
   },
   visibilityText: {
     color: loginColors.caramel,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   forgotButton: {
-    alignSelf: 'flex-end',
-    justifyContent: 'center',
+    alignSelf: "flex-end",
+    justifyContent: "center",
     minHeight: 44,
     marginTop: -10,
     marginBottom: 24,
@@ -228,27 +246,27 @@ const styles = StyleSheet.create({
   textLink: {
     color: loginColors.caramel,
     fontSize: 14,
-    fontWeight: '600',
-    textDecorationLine: 'underline',
+    fontWeight: "600",
+    textDecorationLine: "underline",
   },
   loginButton: {
     height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 12,
     backgroundColor: loginColors.caramel,
   },
   loginButtonText: {
     color: loginColors.surface,
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   registration: {
     marginTop: 36,
   },
   dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 14,
     marginBottom: 28,
   },
@@ -260,12 +278,12 @@ const styles = StyleSheet.create({
   dividerText: {
     color: loginColors.mutedText,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   registerButton: {
     height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1.5,
     borderColor: loginColors.caramel,
     borderRadius: 12,
@@ -273,7 +291,7 @@ const styles = StyleSheet.create({
   registerButtonText: {
     color: loginColors.caramel,
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   pressed: {
     opacity: 0.72,
