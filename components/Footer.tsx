@@ -1,10 +1,10 @@
-import { Link, usePathname } from 'expo-router';
+import { type Href, Link, usePathname } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../constants/colors';
 
 const items = [
-  { href: '/', label: 'ホーム' },
+  { href: '/home', label: 'ホーム' },
   { href: '/tasks', label: '課題' },
   { href: '/calendar', label: 'カレンダー' },
   { href: '/settings', label: '設定' },
@@ -17,10 +17,10 @@ export function Footer() {
     <View style={styles.footer}>
       {items.map((item) => {
         const active =
-          item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+          pathname === item.href || pathname.startsWith(`${item.href}/`);
 
         return (
-          <Link key={item.href} href={item.href} style={styles.link}>
+          <Link key={item.href} href={item.href as Href} style={styles.link}>
             <Text style={[styles.label, active && styles.activeLabel]}>
               {item.label}
             </Text>
