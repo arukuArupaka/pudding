@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     borderTopColor: colors.border,
     borderTopWidth: 1,
-    backgroundColor: colors.surface,
+    backgroundColor:'#fff59d',
     paddingHorizontal: 8,
     paddingVertical: 12,
   },
@@ -48,12 +48,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   label: {
-    color: colors.mutedText,
+    color:'#8F7065',
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
   },
   activeLabel: {
-    color: colors.primary,
+    color:'#422B22',
   },
 });
