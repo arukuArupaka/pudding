@@ -18,6 +18,10 @@
     "components/**/*.tsx",
     "constants/**/*.ts",
     "constants/**/*.tsx",
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "widgets/**/*.ts",
+    "widgets/**/*.tsx",
     "expo-env.d.ts",
     ".expo/types/**/*.ts"
   ],

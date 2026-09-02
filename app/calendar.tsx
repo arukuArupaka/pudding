@@ -1,218 +1,184 @@
-import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useMemo } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { Screen } from '../components/Screen';
-import { colors } from '../constants/colors';
+import {
+  colors,
+  controls,
+  radii,
+  shadows,
+  spacing,
+  typography,
+} from '../constants/colors';
+import { formatCalendarDate, parseDateKey, startOfDay } from '../constants/tasks';
+import { useTasks } from '../lib/tasks';
 
-const weekdayLabels = ['日', '月', '火', '水', '木', '金', '土'];
-
-function getDateKey(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
-}
-
-function getDateFromOffset(offset: number) {
-  const today = new Date();
-  const date = new Date(today);
-  date.setDate(today.getDate() + offset);
-
-  return date;
-}
-
-function getCalendarDays() {
-  return Array.from({ length: 7 }, (_, index) => {
-    const date = getDateFromOffset(index);
-
-    return {
-      key: getDateKey(date),
-      dateLabel: String(date.getDate()),
-      weekday: weekdayLabels[date.getDay()],
-      isToday: index === 0,
-      isSaturday: date.getDay() === 6,
-      isSunday: date.getDay() === 0,
-    };
-  });
-}
-
-const taskTemplates = [
-  {
-    id: '1',
-    title: '数学プリント',
-    subject: '数学',
-    time: '15:00',
-    offset: 0,
-  },
-  {
-    id: '2',
-    title: '英語の小テスト',
-    subject: '英語',
-    time: '16:00',
-    offset: 2,
-  },
-  {
-    id: '3',
-    title: 'レポート提出',
-    subject: '情報',
-    time: '17:30',
-    offset: 4,
-  },
-];
+const days = ['月', '火', '水', '木', '金', '土', '日'];
 
 export default function CalendarScreen() {
-  const calendarDays = useMemo(() => getCalendarDays(), []);
-  const tasks = useMemo(
+  const { tasks } = useTasks();
+  const today = useMemo(() => startOfDay(new Date()), []);
+  const todayIndex = today.getDay() === 0 ? 6 : today.getDay() - 1;
+
+  const scheduledTasks = useMemo(
     () =>
-      taskTemplates.map((task) => ({
-        ...task,
-        dateKey: getDateKey(getDateFromOffset(task.offset)),
-      })),
-    []
+      tasks
+        .filter((task) => task.dueDateKey)
+        .slice()
+        .sort((firstTask, secondTask) =>
+          firstTask.dueDateKey!.localeCompare(secondTask.dueDateKey!)
+        ),
+    [tasks]
   );
-  const [selectedDateKey, setSelectedDateKey] = useState(calendarDays[0].key);
-  const selectedTasks = tasks.filter((task) => task.dateKey === selectedDateKey);
 
   return (
-    <Screen title="カレンダー" subtitle="今週の予定">
+    <Screen title="カレンダー">
       <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.weekScroller}
-        contentContainerStyle={styles.week}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
-        {calendarDays.map((day) => (
-          <Pressable
-            key={day.key}
-            accessibilityRole="button"
-            onPress={() => setSelectedDateKey(day.key)}
-            style={[
-              styles.day,
-              day.isToday && styles.today,
-              selectedDateKey === day.key && styles.selectedDay,
-            ]}
-          >
-            <Text
-              style={[
-                styles.dateText,
-                day.isToday && styles.todayText,
-                selectedDateKey === day.key && styles.selectedDayText,
-              ]}
+        <View style={styles.week}>
+          {days.map((day, index) => (
+            <View
+              key={day}
+              style={[styles.day, index === todayIndex && styles.today]}
             >
-              {day.isToday ? '今日' : day.dateLabel}
-            </Text>
-            <Text
-              style={[
-                styles.dayText,
-                day.isSaturday && styles.saturdayText,
-                day.isSunday && styles.sundayText,
-                day.isToday && styles.todayText,
-                selectedDateKey === day.key && styles.selectedDayText,
-              ]}
-            >
-              {day.weekday}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
-      {selectedTasks.length > 0 ? (
-        selectedTasks.map((task) => (
-          <View key={task.id} style={styles.card}>
-            <Text style={styles.time}>
-              {task.subject} {task.time}
-            </Text>
-            <Text style={styles.title}>{task.title}</Text>
-          </View>
-        ))
-      ) : (
-        <View style={styles.emptyCard}>
-          <Text style={styles.emptyText}>この日の課題はありません</Text>
+              <Text
+                style={[styles.dayText, index === todayIndex && styles.todayText]}
+              >
+                {day}
+              </Text>
+            </View>
+          ))}
         </View>
-      )}
+
+        <View style={styles.section}>
+          {scheduledTasks.length > 0 ? (
+            scheduledTasks.map((task) => {
+              const date = parseDateKey(task.dueDateKey!);
+
+              return (
+                <View key={task.id} style={styles.card}>
+                  <View style={styles.dateBadge}>
+                    <Text style={styles.dateBadgeText}>
+                      {date.getMonth() + 1}/{date.getDate()}
+                    </Text>
+                  </View>
+
+                  <View style={styles.cardBody}>
+                    <Text style={styles.time}>{formatCalendarDate(date)}</Text>
+                    <Text
+                      style={[
+                        styles.title,
+                        task.completed && styles.completedTitle,
+                      ]}
+                    >
+                      {task.title}
+                    </Text>
+                    <Text style={styles.subject}>{task.subject}</Text>
+                  </View>
+                </View>
+              );
+            })
+          ) : (
+            <View style={styles.card}>
+              <Text style={styles.emptyText}>予定されている課題はありません</Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    gap: spacing.md,
+    paddingBottom: spacing.sm,
+  },
   week: {
     flexDirection: 'row',
-    gap: 8,
-  },
-  weekScroller: {
-    flexGrow: 0,
+    gap: spacing.sm,
   },
   day: {
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderColor: colors.border,
-    borderRadius: 8,
+    borderRadius: radii.control,
     borderWidth: 1,
-    gap: 4,
-    height: 66,
+    flex: 1,
     justifyContent: 'center',
-    paddingVertical: 10,
-    width: 66,
+    minHeight: controls.minTap,
   },
   today: {
-    backgroundColor: '#FFF4B8',
-    borderColor: '#E6C94F',
-  },
-  selectedDay: {
-    backgroundColor: '#FFE97A',
-    borderColor: '#C6A53A',
-  },
-  dateText: {
-    color: colors.text,
-    fontSize: 18,
-    fontWeight: '700',
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primary,
   },
   dayText: {
     color: colors.mutedText,
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  saturdayText: {
-    color: '#3478F6',
-  },
-  sundayText: {
-    color: '#E5484D',
+    fontSize: typography.caption,
+    fontWeight: '800',
   },
   todayText: {
-    color: '#6A4E2F',
+    color: colors.primary,
   },
-  selectedDayText: {
-    color: '#6A4E2F',
+  section: {
+    gap: spacing.md,
   },
   card: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 8,
-    borderWidth: 1,
-    padding: 16,
-    gap: 6,
-  },
-  time: {
-    color: colors.accent,
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  title: {
-    color: colors.text,
-    fontSize: 17,
-    fontWeight: '700',
-  },
-  emptyCard: {
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderColor: colors.border,
-    borderRadius: 8,
+    borderRadius: radii.card,
     borderWidth: 1,
-    padding: 16,
+    flexDirection: 'row',
+    gap: spacing.md,
+    minHeight: 76,
+    padding: spacing.lg,
+    ...shadows.card,
+  },
+  dateBadge: {
+    alignItems: 'center',
+    backgroundColor: colors.primarySoft,
+    borderRadius: radii.control,
+    height: 44,
+    justifyContent: 'center',
+    width: 50,
+  },
+  dateBadgeText: {
+    color: colors.primary,
+    fontSize: typography.caption,
+    fontWeight: '800',
+  },
+  cardBody: {
+    flex: 1,
+    minWidth: 0,
+  },
+  time: {
+    color: colors.accent,
+    fontSize: typography.caption,
+    fontWeight: '800',
+  },
+  title: {
+    color: colors.text,
+    fontSize: typography.cardTitle,
+    fontWeight: '800',
+    marginTop: spacing.xs,
+  },
+  completedTitle: {
+    color: colors.mutedText,
+    textDecorationLine: 'line-through',
+  },
+  subject: {
+    color: colors.mutedText,
+    fontSize: typography.caption,
+    marginTop: spacing.xs,
   },
   emptyText: {
     color: colors.mutedText,
-    fontSize: 15,
+    flex: 1,
+    fontSize: typography.body,
     fontWeight: '700',
+    textAlign: 'center',
   },
 });

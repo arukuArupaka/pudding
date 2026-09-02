@@ -1,18 +1,21 @@
 import { Stack } from 'expo-router';
+import { LogBox } from 'react-native';
+
+import { TasksProvider } from '../lib/tasks';
+
+LogBox.ignoreLogs([
+  'Sending `onAnimatedValueUpdate` with no listeners registered.',
+]);
 
 export default function RootLayout() {
   return (
-    <Stack
-      screenOptions={{
-        animation: 'none',
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="index" options={{ animation: 'none' }} />
-      <Stack.Screen name="tasks/index" options={{ animation: 'none' }} />
-      <Stack.Screen name="tasks/add" options={{ animation: 'none' }} />
-      <Stack.Screen name="calendar" options={{ animation: 'none' }} />
-      <Stack.Screen name="settings" options={{ animation: 'none' }} />
-    </Stack>
+    <TasksProvider>
+      <Stack
+        screenOptions={{
+          animation: 'none',
+          headerShown: false,
+        }}
+      />
+    </TasksProvider>
   );
 }
