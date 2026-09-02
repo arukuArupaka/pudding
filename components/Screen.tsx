@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { colors } from '../constants/colors';
+import { colors, spacing, typography } from '../constants/colors';
 import { Footer } from './Footer';
 
 type ScreenProps = PropsWithChildren<{
@@ -12,7 +12,7 @@ type ScreenProps = PropsWithChildren<{
 
 export function Screen({ title, subtitle, children }: ScreenProps) {
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView edges={['top', 'left', 'right']} style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
@@ -31,27 +31,30 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   container: {
+    alignSelf: 'center',
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 12,
+    maxWidth: 760,
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.xl,
+    paddingBottom: 112,
+    width: '100%',
   },
   header: {
-    gap: 6,
-    marginBottom: 24,
+    gap: spacing.xs,
+    marginBottom: spacing.xl,
   },
   title: {
     color: colors.text,
-    fontSize: 28,
-    fontWeight: '700',
+    fontSize: typography.screenTitle,
+    fontWeight: '800',
   },
   subtitle: {
     color: colors.mutedText,
-    fontSize: 15,
+    fontSize: typography.body,
     lineHeight: 22,
   },
   content: {
     flex: 1,
-    gap: 12,
+    gap: spacing.md,
   },
 });

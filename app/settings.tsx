@@ -1,11 +1,17 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Screen } from '../components/Screen';
-import { colors } from '../constants/colors';
+import {
+  colors,
+  radii,
+  shadows,
+  spacing,
+  typography,
+} from '../constants/colors';
 
 export default function SettingsScreen() {
   return (
-    <Screen title="設定" subtitle="アプリの基本設定">
+    <Screen title="設定">
       <View style={styles.item}>
         <Text style={styles.label}>通知</Text>
         <Text style={styles.value}>オン</Text>
@@ -23,19 +29,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderColor: colors.border,
-    borderRadius: 8,
+    borderRadius: radii.card,
     borderWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 16,
+    minHeight: 56,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    ...shadows.card,
   },
   label: {
     color: colors.text,
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: typography.body,
+    fontWeight: '800',
   },
   value: {
     color: colors.mutedText,
-    fontSize: 15,
+    fontSize: typography.body,
+    fontWeight: '600',
   },
 });

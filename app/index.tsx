@@ -1,15 +1,22 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Screen } from '../components/Screen';
-import { colors } from '../constants/colors';
+import {
+  colors,
+  radii,
+  shadows,
+  spacing,
+  typography,
+} from '../constants/colors';
 
 export default function HomeScreen() {
   return (
-    <Screen title="pudding" subtitle="課題と予定をシンプルに整理するアプリ">
-      <View style={styles.card}>
+    <Screen title="pudding">
+      <View style={styles.highlightCard}>
         <Text style={styles.cardTitle}>今日やること</Text>
         <Text style={styles.cardText}>数学プリントを提出</Text>
       </View>
+
       <View style={styles.row}>
         <View style={styles.smallCard}>
           <Text style={styles.number}>3</Text>
@@ -25,43 +32,47 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  card: {
+  highlightCard: {
     backgroundColor: colors.surface,
     borderColor: colors.border,
-    borderRadius: 8,
+    borderRadius: radii.card,
     borderWidth: 1,
-    padding: 18,
-    gap: 8,
+    gap: spacing.sm,
+    padding: spacing.lg,
+    ...shadows.card,
   },
   cardTitle: {
     color: colors.text,
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: typography.cardTitle,
+    fontWeight: '800',
   },
   cardText: {
     color: colors.mutedText,
-    fontSize: 15,
+    fontSize: typography.body,
   },
   row: {
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
   },
   smallCard: {
-    flex: 1,
     backgroundColor: colors.surface,
     borderColor: colors.border,
-    borderRadius: 8,
+    borderRadius: radii.card,
     borderWidth: 1,
-    padding: 16,
+    flex: 1,
+    minHeight: 88,
+    padding: spacing.lg,
+    ...shadows.card,
   },
   number: {
     color: colors.primary,
-    fontSize: 28,
-    fontWeight: '700',
+    fontSize: 30,
+    fontWeight: '800',
   },
   label: {
     color: colors.mutedText,
-    fontSize: 14,
-    marginTop: 4,
+    fontSize: typography.caption,
+    fontWeight: '600',
+    marginTop: spacing.xs,
   },
 });
