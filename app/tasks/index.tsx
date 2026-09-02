@@ -10,16 +10,23 @@ import {
   spacing,
   typography,
 } from '../../constants/colors';
+import { getDateKey, startOfDay } from '../../constants/tasks';
 import { useTasks } from '../../lib/tasks';
 
 export default function TasksScreen() {
   const router = useRouter();
-  const { tasks, toggleTask } = useTasks();
+  const { settings, tasks, toggleTask } = useTasks();
+  const todayKey = getDateKey(startOfDay(new Date()));
+  const visibleTasks = tasks.filter(
+    (task) =>
+      settings.showExpiredTasks || !task.dueDateKey || task.dueDateKey >= todayKey
+  );
 
-  const activeTasks = tasks.filter((task) => !task.completed);
-  const completedTasks = tasks.filter((task) => task.completed);
-  const completedCount = completedTasks.length;
-  const totalCount = tasks.length;
+  const activeTasks = visibleTasks.filter((task) => !task.completed);
+  const allCompletedTasks = visibleTasks.filter((task) => task.completed);
+  const completedTasks = settings.showCompletedTasks ? allCompletedTasks : [];
+  const completedCount = allCompletedTasks.length;
+  const totalCount = visibleTasks.length;
   const progress =
     totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
 
@@ -57,25 +64,31 @@ export default function TasksScreen() {
         </Pressable>
 
         <View style={styles.section}>
-          {activeTasks.map((task) => (
-            <View key={task.id} style={styles.card}>
-              <Pressable
-                onPress={() => toggleTask(task.id)}
-                style={styles.checkboxButton}
-              >
-                <View style={styles.checkbox} />
-              </Pressable>
+          {activeTasks.length > 0 ? (
+            activeTasks.map((task) => (
+              <View key={task.id} style={styles.card}>
+                <Pressable
+                  onPress={() => toggleTask(task.id)}
+                  style={styles.checkboxButton}
+                >
+                  <View style={styles.checkbox} />
+                </Pressable>
 
-              <View style={styles.center}>
-                <Text style={styles.title}>{task.title}</Text>
-                <Text style={styles.subject}>{task.subject}</Text>
-              </View>
+                <View style={styles.center}>
+                  <Text style={styles.title}>{task.title}</Text>
+                  <Text style={styles.subject}>{task.subject}</Text>
+                </View>
 
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>締切：{task.due}</Text>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>締切：{task.due}</Text>
+                </View>
               </View>
+            ))
+          ) : (
+            <View style={styles.card}>
+              <Text style={styles.emptyText}>表示できる課題はありません</Text>
             </View>
-          ))}
+          )}
         </View>
 
         {completedTasks.length > 0 && (
@@ -254,5 +267,12 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: typography.sectionTitle,
     fontWeight: '800',
+  },
+  emptyText: {
+    color: colors.mutedText,
+    flex: 1,
+    fontSize: typography.body,
+    fontWeight: '700',
+    textAlign: 'center',
   },
 });

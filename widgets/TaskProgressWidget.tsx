@@ -14,6 +14,7 @@ import {
   frame,
   padding,
   strokeBorder,
+  widgetURL,
 } from '@expo/ui/swift-ui/modifiers';
 import { createWidget, type WidgetEnvironment } from 'expo-widgets';
 
@@ -60,6 +61,7 @@ const TaskProgressWidget = (
       modifiers={[
         containerBackground(widgetColors.surface, 'widget'),
         clipShape('roundedRectangle', 8),
+        widgetURL('pudding://tasks'),
         strokeBorder({
           color: widgetColors.border,
           style: {

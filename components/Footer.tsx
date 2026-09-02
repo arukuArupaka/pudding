@@ -48,7 +48,11 @@ export function Footer() {
     return (
       <Pressable
         key={item.href}
-        onPress={() => router.push(item.href)}
+        onPress={() => {
+          if (!active) {
+            router.replace(item.href);
+          }
+        }}
         style={({ pressed }) =>
           StyleSheet.flatten([
             styles.link,
