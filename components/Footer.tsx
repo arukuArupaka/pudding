@@ -1,17 +1,18 @@
-import { Link, usePathname } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { type Href, usePathname, useRouter } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../constants/colors';
 
-const items = [
+const items: { href: Href; label: string }[] = [
   { href: '/', label: 'ホーム' },
   { href: '/tasks', label: '課題' },
   { href: '/calendar', label: 'カレンダー' },
   { href: '/settings', label: '設定' },
-] as const;
+];
 
 export function Footer() {
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <View style={styles.footer}>
@@ -20,11 +21,19 @@ export function Footer() {
           item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
 
         return (
-          <Link key={item.href} href={item.href} style={styles.link}>
+          <Pressable
+            key={String(item.href)}
+            onPress={() => {
+              if (!active) {
+                router.replace(item.href);
+              }
+            }}
+            style={styles.link}
+          >
             <Text style={[styles.label, active && styles.activeLabel]}>
               {item.label}
             </Text>
-          </Link>
+          </Pressable>
         );
       })}
     </View>
