@@ -14,6 +14,7 @@ import { useTasks } from '../lib/tasks';
 export default function SettingsScreen() {
   const {
     clearTasks,
+    setNotificationsEnabled,
     setShowCompletedTasks,
     setShowExpiredTasks,
     settings,
@@ -40,6 +41,25 @@ export default function SettingsScreen() {
 
   return (
     <Screen title="設定">
+      <View style={styles.item}>
+        <View style={styles.itemText}>
+          <Text style={styles.label}>通知を有効にする</Text>
+          <Text style={styles.description}>
+            オンにすると、課題の締め切り前日の午前９時に通知します
+          </Text>
+        </View>
+        <Switch
+          ios_backgroundColor={colors.surfaceMuted}
+          onValueChange={setNotificationsEnabled}
+          thumbColor={settings.notificationsEnabled ? colors.action : colors.surface}
+          trackColor={{
+            false: colors.surfaceMuted,
+            true: colors.primarySoft,
+          }}
+          value={settings.notificationsEnabled}
+        />
+      </View>
+
       <View style={styles.item}>
         <View style={styles.itemText}>
           <Text style={styles.label}>期限切れ課題を表示</Text>

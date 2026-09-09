@@ -16,6 +16,10 @@ import {
   initialTasks,
   type Task,
 } from '../constants/tasks';
+import {
+  cancelTaskDeadlineNotifications,
+  syncTaskDeadlineNotifications,
+} from './taskNotifications';
 import { updateTaskProgressWidget } from './taskProgressWidget';
 
 const TASKS_STORAGE_KEY = '@pudding_tasks';
@@ -96,6 +100,7 @@ type TasksContextValue = {
   addTask: (input: AddTaskInput) => void;
   clearTasks: () => void;
   settings: AppSettings;
+  setNotificationsEnabled: (value: boolean) => void;
   setShowCompletedTasks: (value: boolean) => void;
   setShowExpiredTasks: (value: boolean) => void;
   tasks: Task[];
@@ -146,6 +151,10 @@ function normalizeStoredSettings(value: unknown): AppSettings {
   const settings = value as Partial<AppSettings>;
 
   return {
+    notificationsEnabled:
+      typeof settings.notificationsEnabled === 'boolean'
+        ? settings.notificationsEnabled
+        : defaultAppSettings.notificationsEnabled,
     showCompletedTasks:
       typeof settings.showCompletedTasks === 'boolean'
         ? settings.showCompletedTasks
@@ -208,6 +217,23 @@ export function TasksProvider({ children }: PropsWithChildren) {
       return;
     }
 
+    if (!settings.notificationsEnabled) {
+      cancelTaskDeadlineNotifications().catch((error) => {
+        console.error('課題通知のキャンセルに失敗しました:', error);
+      });
+      return;
+    }
+
+    syncTaskDeadlineNotifications(tasks).catch((error) => {
+      console.error('課題通知の同期に失敗しました:', error);
+    });
+  }, [hasLoadedStorage, settings.notificationsEnabled, tasks]);
+
+  useEffect(() => {
+    if (!hasLoadedStorage) {
+      return;
+    }
+
     setStoredItem(TASKS_STORAGE_KEY, JSON.stringify(tasks)).catch((error) => {
       console.error('課題の保存に失敗しました:', error);
     });
@@ -244,6 +270,12 @@ export function TasksProvider({ children }: PropsWithChildren) {
         setTasks([]);
       },
       settings,
+      setNotificationsEnabled: (notificationsEnabled) => {
+        setSettings((currentSettings) => ({
+          ...currentSettings,
+          notificationsEnabled,
+        }));
+      },
       setShowCompletedTasks: (showCompletedTasks) => {
         setSettings((currentSettings) => ({
           ...currentSettings,

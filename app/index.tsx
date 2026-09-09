@@ -1,75 +1,36 @@
-import { useRouter } from 'expo-router';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 import { Screen } from '../components/Screen';
-import { getDateKey, startOfDay } from '../constants/tasks';
-import { useTasks } from '../lib/tasks';
 
 export default function HomeScreen() {
-  const router = useRouter();
-  const { settings, tasks } = useTasks();
-  const todayKey = getDateKey(startOfDay(new Date()));
-  const visibleTasks = tasks.filter(
-    (task) =>
-      settings.showExpiredTasks || !task.dueDateKey || task.dueDateKey >= todayKey
-  );
-  const incompleteTasks = visibleTasks.filter((task) => !task.completed);
-  const todayTasks = tasks.filter(
-    (task) =>
-      task.dueDateKey === todayKey &&
-      (settings.showCompletedTasks || !task.completed)
-  );
-  const todayTask = todayTasks.find((task) => !task.completed) ?? todayTasks[0];
-
   return (
     <Screen title="Pudding🍮">
       {/* 上の2つのカード */}
       <View style={styles.row}>
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => router.push('/tasks')}
-          style={({ pressed }) =>
-            StyleSheet.flatten([styles.smallCard, pressed && styles.pressed])
-          }
-        >
-          <Text style={styles.number}>{incompleteTasks.length}</Text>
+        <View style={styles.smallCard}>
+          <Text style={styles.number}>3</Text>
           <Text style={styles.label}>未完了</Text>
-        </Pressable>
+        </View>
 
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => router.push('/calendar')}
-          style={({ pressed }) =>
-            StyleSheet.flatten([styles.smallCard, pressed && styles.pressed])
-          }
-        >
-          <Text style={styles.number}>{todayTasks.length}</Text>
+        <View style={styles.smallCard}>
+          <Text style={styles.number}>1</Text>
           <Text style={styles.label}>今日の予定</Text>
-        </Pressable>
+        </View>
       </View>
 
       {/* 吹き出し */}
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => router.push('/tasks')}
-        style={({ pressed }) =>
-          StyleSheet.flatten([styles.card, pressed && styles.pressed])
-        }
-      >
+      <View style={styles.card}>
         <Text style={styles.cardTitle}>今日やること!!!</Text>
 
         <View style={styles.todo}>
-          <Text style={styles.cardText}>
-            {todayTask ? todayTask.title : '今日の課題はありません'}
-          </Text>
+          <Text style={styles.cardText}>数学プリントを提出</Text>
         </View>
 
         <View style={styles.tail} />
-      </Pressable>
+      </View>
 
       {/* キャラクター */}
       <Image
-        resizeMode="contain"
         source={require('../assets/images/purin.png')}
         style={styles.character}
       />
@@ -143,20 +104,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
 
   },
-  pressed: {
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    transform: [
-      {
-        translateY: 2,
-      },
-    ],
-  },
 
   tail: {
     position: 'absolute',
     bottom: -16,
-    right: 118,
+    right: 70,
 
     width: 0,
     height: 0,
@@ -168,17 +120,12 @@ const styles = StyleSheet.create({
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
     borderTopColor: '#fff',
-    transform: [
-      {
-        rotate: '18deg',
-      },
-    ],
   },
 
-  character: {
-    alignSelf: 'center',
-    height: 270,
-    marginTop: -30,
-    width: 270,
-  },
+ character: {
+  width: 270,
+  height: 270,
+  marginTop: -30,
+  marginLeft: 160,
+},
 });
